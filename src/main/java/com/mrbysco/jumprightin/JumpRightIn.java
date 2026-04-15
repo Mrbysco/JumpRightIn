@@ -2,11 +2,10 @@ package com.mrbysco.jumprightin;
 
 import com.mojang.logging.LogUtils;
 import com.mrbysco.jumprightin.config.JumpConfig;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
 import org.slf4j.Logger;
 
 @Mod(JumpRightIn.MOD_ID)
@@ -14,10 +13,10 @@ public class JumpRightIn {
 	public static final String MOD_ID = "jumprightin";
 	public static final Logger LOGGER = LogUtils.getLogger();
 
-	public JumpRightIn() {
-		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-			ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, JumpConfig.clientSpec);
-		});
+	public JumpRightIn(ModContainer container, Dist dist) {
+		if (dist.isClient()) {
+			container.registerConfig(ModConfig.Type.CLIENT, JumpConfig.clientSpec);
+		}
 	}
 
 }

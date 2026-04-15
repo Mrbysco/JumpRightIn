@@ -2,7 +2,7 @@ package com.mrbysco.jumprightin;
 
 import com.mrbysco.jumprightin.config.JumpConfig;
 import com.mrbysco.jumprightin.config.LoadType;
-import net.minecraftforge.fml.loading.FMLPaths;
+import net.neoforged.fml.loading.FMLPaths;
 
 import java.io.File;
 import java.nio.file.Path;
