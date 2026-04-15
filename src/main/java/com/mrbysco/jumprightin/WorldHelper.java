@@ -2,6 +2,7 @@ package com.mrbysco.jumprightin;
 
 import com.mrbysco.jumprightin.config.JumpConfig;
 import com.mrbysco.jumprightin.config.LoadType;
+import net.minecraft.client.main.GameConfig;
 import net.neoforged.fml.loading.FMLPaths;
 
 import java.io.File;
@@ -41,6 +42,18 @@ public class WorldHelper {
 			}
 		}
 		return true;
+	}
+
+	public static GameConfig.QuickPlayVariant getQuickPlayVariant() {
+		String worldName = JumpConfig.CLIENT.worldName.get();
+		String serverIP = JumpConfig.CLIENT.serverIP.get();
+		if (!worldName.isBlank()) {
+			return new GameConfig.QuickPlaySinglePlayerData(worldName);
+		} else if (!serverIP.isBlank()) {
+			return new GameConfig.QuickPlayMultiplayerData(serverIP);
+		} else {
+			throw new IllegalArgumentException("Both world name and server IP cannot be blank.");
+		}
 	}
 
 }
