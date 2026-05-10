@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "jumprightin",
+  "version": "${version}",
+  "name": "Jump Right In",
+  "description": "Skip the main menu and get sent straight into a world!",
+  "authors": [
+    "Mrbysco", "Nekomaster1000"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/jump-right-in",
+    "sources": "https://github.com/Mrbysco/JumpRightIn",
+    "issues": "https://github.com/Mrbysco/JumpRightIn/issues"
+  },
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.mrbysco.jumprightin.FabricJumpRightIn"
+    ]
+  },
+  "mixins": [
+    "jumprightin.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14",
+    "fabric": "*",
+    "minecraft": "~1.20",
+    "java": ">=17"
+  }
+}
