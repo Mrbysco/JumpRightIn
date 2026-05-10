@@ -1,30 +1,52 @@
 package com.mrbysco.jumprightin.mixin;
 
-import com.mojang.realmsclient.client.RealmsClient;
+import com.google.common.collect.Lists;
+import com.llamalad7.mixinextras.sugar.Local;
 import com.mrbysco.jumprightin.WorldHelper;
 import com.mrbysco.jumprightin.config.JumpConfig;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.main.GameConfig;
 import net.minecraft.client.quickplay.QuickPlay;
-import net.minecraft.server.packs.resources.ReloadInstance;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.List;
+import java.util.function.Function;
 
 @Mixin(Minecraft.class)
 public abstract class MinecraftMixin {
+	@Shadow
+	public abstract void setScreen(@Nullable Screen guiScreen);
 
 	@Inject(
-			at = @At("HEAD"),
-			method = "setInitialScreen(Lcom/mojang/realmsclient/client/RealmsClient;Lnet/minecraft/server/packs/resources/ReloadInstance;Lnet/minecraft/client/main/GameConfig$QuickPlayData;)V",
+			method = "buildInitialScreens(Lnet/minecraft/client/Minecraft$GameLoadCookie;)Ljava/lang/Runnable;",
+			at = @At(
+					value = "INVOKE",
+					target = "Lnet/minecraft/client/Minecraft;addInitialScreens(Ljava/util/List;)V",
+					shift = At.Shift.AFTER,
+					ordinal = 0),
 			cancellable = true
 	)
-	public void jumprightin$setInitialScreen(RealmsClient realmsClient, ReloadInstance reloadInstance, GameConfig.QuickPlayData quickPlayData, CallbackInfo ci) {
+	public void jumprightin$setInitialScreen(Minecraft.GameLoadCookie gameLoadCookie, CallbackInfoReturnable<Runnable> cir,
+	                                         @Local List<Function<Runnable, Screen>> list) {
 		Minecraft mc = (Minecraft) (Object) this;
 		if (WorldHelper.loadConfiguredWorld()) {
-			QuickPlay.connect(mc, new GameConfig.QuickPlayData(null, JumpConfig.CLIENT.worldName.get(), JumpConfig.CLIENT.serverIP.get(), ""), reloadInstance, realmsClient);
-			ci.cancel();
+			Runnable runnable = () -> {
+				var quickPlayData = new GameConfig.QuickPlayData(null, JumpConfig.CLIENT.worldName.get(), JumpConfig.CLIENT.serverIP.get(), "");
+				QuickPlay.connect(mc, quickPlayData, gameLoadCookie.realmsClient());
+			};
+
+			for (Function<Runnable, Screen> function : Lists.reverse(list)) {
+				Screen screen = function.apply(runnable);
+				runnable = () -> this.setScreen(screen);
+			}
+
+			cir.setReturnValue(runnable);
 		}
 	}
 }
