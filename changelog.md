@@ -1,1 +1,1 @@
-* First 1.21.1 multiloader build
+* Fix mixin not applying (NeoForge)
