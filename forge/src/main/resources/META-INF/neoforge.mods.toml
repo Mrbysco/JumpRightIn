@@ -15,12 +15,14 @@ Skip the main menu and get sent straight into a world!
 [[dependencies.jumprightin]]
 modId="minecraft"
 type="required"
-versionRange="[1.21,1.22)"
+versionRange="[26.1.1,)"
 ordering="NONE"
 side="BOTH"
 [[dependencies.jumprightin]]
 modId="neoforge"
 type="required"
-versionRange="[21.0.143,)"
+versionRange="[26.1.1.0-beta,)"
 ordering="NONE"
 side="BOTH"
+[[mixins]]
+config="jumprightin.mixins.json"

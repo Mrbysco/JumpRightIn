@@ -3,7 +3,6 @@ package com.mrbysco.jumprightin.mixin;
 import com.google.common.collect.Lists;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mrbysco.jumprightin.WorldHelper;
-import com.mrbysco.jumprightin.config.JumpConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.main.GameConfig;
@@ -27,7 +26,7 @@ public abstract class MinecraftMixin {
 			method = "buildInitialScreens(Lnet/minecraft/client/Minecraft$GameLoadCookie;)Ljava/lang/Runnable;",
 			at = @At(
 					value = "INVOKE",
-					target = "Lnet/minecraft/client/Minecraft;addInitialScreens(Ljava/util/List;)V",
+					target = "Lnet/minecraft/client/Minecraft;addInitialScreens(Ljava/util/List;)Z",
 					shift = At.Shift.AFTER,
 					ordinal = 0),
 			cancellable = true
@@ -37,8 +36,8 @@ public abstract class MinecraftMixin {
 		Minecraft mc = (Minecraft) (Object) this;
 		if (WorldHelper.loadConfiguredWorld()) {
 			Runnable runnable = () -> {
-				var quickPlayData = new GameConfig.QuickPlayData(null, JumpConfig.CLIENT.worldName.get(), JumpConfig.CLIENT.serverIP.get(), "");
-				QuickPlay.connect(mc, quickPlayData, gameLoadCookie.realmsClient());
+				GameConfig.QuickPlayVariant gameconfig$quickplayvariant = WorldHelper.getQuickPlayVariant();
+				QuickPlay.connect(mc, gameconfig$quickplayvariant, gameLoadCookie.realmsClient());
 			};
 
 			for (Function<Runnable, Screen> function : Lists.reverse(list)) {

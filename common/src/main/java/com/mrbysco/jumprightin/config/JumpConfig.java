@@ -1,6 +1,5 @@
 package com.mrbysco.jumprightin.config;
 
-import net.neoforged.fml.config.IConfigSpec;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
