@@ -24,3 +24,5 @@ type="required"
 versionRange="[21.0.143,)"
 ordering="NONE"
 side="BOTH"
+[[mixins]]
+config="jumprightin.mixins.json"
